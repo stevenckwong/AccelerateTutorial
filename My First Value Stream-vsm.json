@@ -1,0 +1,157 @@
+{
+  "_id": "602df52b904c6a21632f62be",
+  "pipelineId": "0bee674a-abc8-4758-b206-fa20ad59bab9",
+  "tenantId": "5ade13625558f2c6688d15ce",
+  "description": null,
+  "query": "",
+  "phases": [
+    {
+      "name": "PLAN",
+      "description": "",
+      "stages": [
+        {
+          "name": "Backlog",
+          "query": "issue.status=\"Backlog\"",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        },
+        {
+          "name": "Selected for Development",
+          "query": "issue.status=\"Selected for Development\"",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        }
+      ]
+    },
+    {
+      "name": "DEVELOP",
+      "description": "",
+      "stages": [
+        {
+          "name": "In Progress",
+          "query": "issue.status=\"In Progress\" AND deployment.env!=PROD ",
+          "description": "",
+          "wipLimit": 10,
+          "gates": null
+        },
+        {
+          "name": "In Review",
+          "query": "issue.status!=Done and pr.status=open",
+          "description": "",
+          "wipLimit": 5,
+          "gates": null
+        },
+        {
+          "name": "Merged",
+          "query": "(pr.status=MERGED or pr.status=closed) AND build.status!=success AND deployment.env!=DEV and deployment.env!=PROD ",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        }
+      ]
+    },
+    {
+      "name": "DEPLOY",
+      "description": "",
+      "stages": [
+        {
+          "name": "DEV",
+          "query": "",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        },
+        {
+          "name": "QA",
+          "query": "",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        },
+        {
+          "name": "PROD",
+          "query": "",
+          "description": "",
+          "wipLimit": null,
+          "gates": null
+        }
+      ]
+    }
+  ],
+  "leadTime": {
+    "start": "Backlog",
+    "end": "PROD"
+  },
+  "cycleTime": {
+    "start": "In Progress",
+    "end": "PROD"
+  },
+  "mappings": {
+    "priority": {
+      "Lowest": [
+        "Lowest"
+      ],
+      "Low": [
+        "Low"
+      ],
+      "Medium": [
+        "Medium"
+      ],
+      "High": [
+        "High"
+      ],
+      "Highest": [
+        "Highest"
+      ]
+    }
+  },
+  "integrations": [
+    {
+      "_id": "602f039a7c2ddb51c4e7443a",
+      "type": "ucv-ext-jira",
+      "tenant_id": "5ade13625558f2c6688d15ce",
+      "name": "Tutorial - First VSM",
+      "disabled": false,
+      "properties": {
+        "baseUrl": "https://stevenckwong.atlassian.net/",
+        "username": "swong.at.work@gmail.com",
+        "password": "****",
+        "jiraProjects": [
+          "FIR"
+        ]
+      },
+      "image": "urbancode/ucv-ext-jira:1.0.39"
+    },
+    {
+      "_id": "602f220b7c2ddba8d3e7448d",
+      "type": "ucv-ext-github",
+      "tenant_id": "5ade13625558f2c6688d15ce",
+      "name": "Github Accelerate Integration Tutorial",
+      "disabled": false,
+      "properties": {
+        "ucvAccessKey": "****",
+        "repositories": [
+          "AccelerateTutorial"
+        ],
+        "branch": "main",
+        "owner": "stevenckwong",
+        "apiUrl": "https://api.github.com",
+        "token": "****"
+      },
+      "image": "urbancode/ucv-ext-github:1.0.40"
+    }
+  ],
+  "linkRules": [
+    {
+      "fromIntegrationName": "Github Accelerate Integration Tutorial",
+      "toIntegrationName": "Tutorial - First VSM",
+      "fromField": "pr.name",
+      "toField": "issue.id",
+      "pattern": "([A-Z]+-[0-9]+)"
+    }
+  ],
+  "metrics": null,
+  "metricsBar": null
+}
